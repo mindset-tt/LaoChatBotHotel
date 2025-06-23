@@ -3,7 +3,14 @@ import { useState } from "react";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import "./pageNewChats.css";
 import Markdown from "react-markdown";
-import { Box, IconButton, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
 import {
@@ -13,6 +20,8 @@ import {
 } from "../../hooks/mutations/chats/chats.mutate";
 import { Field, Form } from "react-final-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { ArrowUpward } from "@mui/icons-material";
+import SendIcon from "@mui/icons-material/Send";
 
 const randomId = () => Math.random().toString(36).substr(2, 9);
 export const PageNewChats = () => {
@@ -27,11 +36,14 @@ export const PageNewChats = () => {
   const { mutate: history } = useGetChatsHistory();
   const { mutate: historyList } = useGetChatsHistoryList();
 
+  const removeAllTags = (input: string): string => {
+    return input.replace(/<[^>]*>/g, "");
+  };
 
   useEffect(() => {
-
-    fetchHistoryList()
-  }, [])
+    fetchHistoryList();
+    fetchHistory();
+  }, []);
 
   const fetchHistory = () => {
     history(
@@ -58,10 +70,6 @@ export const PageNewChats = () => {
       },
     });
   };
-
-  useEffect(() => {
-    fetchHistory();
-  }, []);
 
   const onSubmit = async (value: any) => {
     try {
@@ -93,7 +101,7 @@ export const PageNewChats = () => {
                 ...prev,
                 { role: "bot", content: data?.reply, timestamp: new Date() },
               ]);
-              fetchHistoryList()
+              fetchHistoryList();
             },
             onError: (error: any) => {
               setTyping(false);
@@ -109,7 +117,7 @@ export const PageNewChats = () => {
 
   const navigateToNewChat = () => {
     navigation(`/chats/` + randomId());
-    setTyping(false)
+    setTyping(false);
     setChats([]); // Clear the chat history when navigating to a new chat
   };
 
@@ -125,11 +133,10 @@ export const PageNewChats = () => {
           justifyContent={"center"}
           color={"white"}
           boxShadow="0 2px 8px rgba(0,0,0,0.15)"
-          // borderRadius="8px"
           borderRadius={"0.5rem"}
-          sx={{ color: "black" }}
+          sx={{ color: "white" }}
         >
-          Assistant
+          ChatBot
         </Box>
         <Box width={"100%"} height={"100%"} display={"flex"} maxHeight={"94%"}>
           <Box
@@ -138,18 +145,18 @@ export const PageNewChats = () => {
             height={"100%"}
             sx={{
               width: 300,
-              overflowY: 'auto',  // Enable vertical scrolling
-              scrollbarWidth: 'thin',  // Firefox support for custom scrollbar
-              scrollbarColor: 'transparent transparent',  // Firefox support for scrollbar color
+              overflowY: "auto", // Enable vertical scrolling
+              scrollbarWidth: "thin", // Firefox support for custom scrollbar
+              scrollbarColor: "transparent transparent", // Firefox support for scrollbar color
 
               // Webkit (for Chrome, Safari, Edge)
-              '&::-webkit-scrollbar': {
-                display: 'none',  // Hide scrollbar
+              "&::-webkit-scrollbar": {
+                display: "none", // Hide scrollbar
               },
-              '&:hover::-webkit-scrollbar': {
-                display: 'block',  // Show scrollbar on hover
+              "&:hover::-webkit-scrollbar": {
+                display: "block", // Show scrollbar on hover
               },
-            }}            // overflow={"scroll"}
+            }}
           >
             <Box
               sx={{
@@ -159,16 +166,16 @@ export const PageNewChats = () => {
                 display: "flex",
                 justifyContent: "end",
                 padding: 1,
-                overflowY: 'auto',  // Enable vertical scrolling
-                scrollbarWidth: 'thin',  // Firefox support for custom scrollbar
-                scrollbarColor: 'transparent transparent',  // Firefox support for scrollbar color
+                overflowY: "auto", // Enable vertical scrolling
+                scrollbarWidth: "thin", // Firefox support for custom scrollbar
+                scrollbarColor: "transparent transparent", // Firefox support for scrollbar color
 
                 // Webkit (for Chrome, Safari, Edge)
-                '&::-webkit-scrollbar': {
-                  display: 'none',  // Hide scrollbar
+                "&::-webkit-scrollbar": {
+                  display: "none", // Hide scrollbar
                 },
-                '&:hover::-webkit-scrollbar': {
-                  display: 'block',  // Show scrollbar on hover
+                "&:hover::-webkit-scrollbar": {
+                  display: "block", // Show scrollbar on hover
                 },
               }}
             >
@@ -176,7 +183,7 @@ export const PageNewChats = () => {
                 <AddIcon sx={{ color: "black" }} />
               </IconButton>
             </Box>
-            <Box overflow={"scroll"} height={"90%"} >
+            <Box overflow={"scroll"} height={"90%"}>
               {historyListData.map((item, idx) => {
                 const chatId = item.sessionID;
                 // const isActive = params.id === "2e9d8ssb7";
@@ -198,17 +205,11 @@ export const PageNewChats = () => {
                       },
                     }}
                     onClick={() => {
-                      navigation(`/chats/${chatId}`)
-                      fetchHistory()
-
-                    }
-
-                    }
+                      navigation(`/chats/${chatId}`);
+                      fetchHistory();
+                    }}
                   >
                     <Typography>{item.content.content}</Typography>
-                    {/* <Typography variant="body2" color="textSecondary">
-                      {item.answer}
-                    </Typography> */}
                   </Box>
                 );
               })}
@@ -223,16 +224,15 @@ export const PageNewChats = () => {
             gap={2}
             justifyContent={"center"}
             sx={{
-              overflowY: 'auto',  // Enable vertical scrolling
-              scrollbarWidth: 'thin',  // Firefox support for custom scrollbar
-              scrollbarColor: 'transparent transparent',  // Firefox support for scrollbar color
+              overflowY: "auto", // Enable vertical scrolling
+              scrollbarWidth: "thin", // Firefox support for custom scrollbar
+              scrollbarColor: "transparent transparent", // Firefox support for scrollbar color
 
-              // Webkit (for Chrome, Safari, Edge)
-              '&::-webkit-scrollbar': {
-                display: 'none',  // Hide scrollbar
+              "&::-webkit-scrollbar": {
+                display: "none", // Hide scrollbar
               },
-              '&:hover::-webkit-scrollbar': {
-                display: 'block',  // Show scrollbar on hover
+              "&:hover::-webkit-scrollbar": {
+                display: "block", // Show scrollbar on hover
               },
             }}
           >
@@ -241,11 +241,13 @@ export const PageNewChats = () => {
                 {chats.map((item, index) => (
                   <React.Fragment key={index}>
                     {item.role === "user" && (
-                      <div className="message user">{item.content}</div>
+                      <div className="message user">
+                        {removeAllTags(item.content)}
+                      </div>
                     )}
                     {item.role === "bot" && (
                       <div className="message">
-                        <Markdown>{item.content}</Markdown>
+                        <Markdown>{removeAllTags(item.content)}</Markdown>
                       </div>
                     )}
                   </React.Fragment>
@@ -266,7 +268,7 @@ export const PageNewChats = () => {
                   const isDisabled = !values.chat || values.chat.trim() === "";
                   const clearInput = (e) => {
                     handleSubmit(e);
-                    fetchHistoryList()
+                    fetchHistoryList();
                     form.reset();
                   };
                   return (
@@ -274,30 +276,59 @@ export const PageNewChats = () => {
                       <Field name="chat">
                         {(props) => (
                           <Box width={"100%"}>
-                            <input
+                            <TextField
                               name={props.input.name}
                               value={props.input.value}
                               onChange={props.input.onChange}
-                              placeholder="Ask anything..."
+                              placeholder="ພິມຄຳຖາມຂອງທ່ານ..."
+                              variant="outlined"
+                              fullWidth
+                              sx={{
+                                "& .MuiOutlinedInput-root": {
+                                  borderRadius: "12px",
+                                  backgroundColor: "#f5f5f5",
+                                  paddingRight: "8px",
+                                  "& fieldset": {
+                                    borderColor: "#e0e0e0",
+                                  },
+                                  "&:hover fieldset": {
+                                    borderColor: "#4caf50",
+                                  },
+                                  "&.Mui-focused fieldset": {
+                                    borderColor: "#4caf50",
+                                  },
+                                },
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <IconButton
+                                      disabled={isDisabled}
+                                      type="submit"
+                                      sx={{
+                                        backgroundColor: "#4caf50",
+                                        color: "white",
+                                        width: "40px",
+                                        height: "40px",
+                                        "&:hover": {
+                                          backgroundColor: "#45a049",
+                                        },
+                                        "&.Mui-disabled": {
+                                          backgroundColor: "#4caf50",
+                                          color: "white",
+                                          opacity: 0.6,
+                                        },
+                                      }}
+                                    >
+                                      <SendIcon />
+                                    </IconButton>
+                                  </InputAdornment>
+                                ),
+                              }}
                             />
                           </Box>
                         )}
                       </Field>
-                      <button
-                        type="submit"
-                        disabled={isDisabled}
-                        style={{
-                          background: isDisabled ? "#ccc" : "#49bb58",
-                          color: "white",
-                          border: "none",
-                          padding: "8px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <ArrowUpwardIcon sx={{ color: "white" }} />
-                      </button>
                     </form>
                   );
                 }}
@@ -309,22 +340,3 @@ export const PageNewChats = () => {
     </Box>
   );
 };
-
-const mockData = [
-  {
-    sessionID: "pdetwlbqs",
-    content: {
-      role: "user",
-      content: "ຕ້ອງການຫ້ອງຫວ່າງ",
-      timestamp: "2025-06-15T04:48:58",
-    },
-  },
-  {
-    sessionID: "3jiwjdflsf",
-    content: {
-      role: "user",
-      content: "ຕ້ອງການຫ້ອງຫວ່າງ",
-      timestamp: "2025-06-15T04:48:58",
-    },
-  },
-];

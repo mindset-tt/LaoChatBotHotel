@@ -9,11 +9,11 @@ import { Room } from "../pages/hotel/room/Room";
 export const RoutesManagement = () => {
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
       <Route element={<MainLayout />}>
         <Route path="*" element={<Navigate to="/chats" />} />
         <Route path="/chats" element={<PageNewChats />} />
         <Route path="/chats/:id" element={<PageNewChats />} />
-        <Route path="/login" element={<Login />} />
         <Route path="/rooms" element={<Room />} />
       </Route>
     </Routes>
