@@ -82,7 +82,59 @@
 
 ---
 
-## � Core Features
+## ⚙️ System Requirements
+
+### 🖥️ Minimum Requirements
+
+| Component | Requirement | Purpose |
+|-----------|-------------|---------|
+| **OS** | Windows 10/11, macOS 10.15+, Ubuntu 18.04+ | Cross-platform support |
+| **RAM** | 8GB | Basic operation |
+| **Storage** | 5GB free space | Application and data |
+| **Internet** | Broadband connection | Model downloads, updates |
+
+### 🚀 Recommended Setup
+
+| Component | Specification | Benefit |
+|-----------|---------------|---------|
+| **RAM** | 16GB+ | Optimal AI performance |
+| **GPU** | RTX 3050 Ti+ (4GB VRAM) | Accelerated AI processing |
+| **Storage** | SSD with 10GB+ free | Faster load times |
+| **CPU** | Modern multi-core processor | Better overall performance |
+
+### 💻 Software Dependencies
+
+<details>
+<summary><strong>Backend Requirements</strong></summary>
+
+```
+Python 3.8+ with packages:
+├── FastAPI 0.104+        # Web framework
+├── PyTorch               # AI model support
+├── SQLAlchemy           # Database ORM
+├── Uvicorn              # ASGI server
+└── Additional AI libraries
+```
+
+</details>
+
+<details>
+<summary><strong>Frontend Requirements</strong></summary>
+
+```
+Node.js 14+ with packages:
+├── React 18+            # UI framework
+├── TypeScript           # Type safety
+├── Vite                 # Build tool
+├── Material-UI          # UI components
+└── Additional utilities
+```
+
+</details>
+
+---
+
+## 🎯 Core Features
 
 ### 🤖 AI Chat Assistant
 
@@ -106,7 +158,7 @@
 - 💰 Daily/monthly revenue
 - 👥 Guest satisfaction scores  
 - 🔧 System health status
-- � Booking trends
+- 📊 Booking trends
 
 **Business Intelligence:**
 - Revenue optimization insights
@@ -181,7 +233,7 @@
 
 ## ⚙️ System Requirements
 
-### �️ Minimum Requirements
+### 🖥️ Minimum Requirements
 
 | Component | Requirement | Purpose |
 |-----------|-------------|---------|
@@ -199,7 +251,7 @@
 | **Storage** | SSD with 10GB+ free | Faster load times |
 | **CPU** | Modern multi-core processor | Better overall performance |
 
-### � Software Dependencies
+### 💻 Software Dependencies
 
 <details>
 <summary><strong>Backend Requirements</strong></summary>
@@ -802,7 +854,7 @@ curl http://localhost:8000/system/health/
 curl -X POST http://localhost:8000/database/optimize/
 ```
 
-## � Future Enhancements
+## 🚀 Future Enhancements
 
 We're continuously improving the Hotel AI Intelligent Assistant. Here are some exciting features planned for future releases:
 
@@ -887,7 +939,7 @@ git push origin feature/your-new-feature
 - **Testing**: Include tests for new features
 - **Performance**: Ensure changes don't negatively impact system performance
 
-## � Troubleshooting & Common Issues
+## 🔧 Troubleshooting & Common Issues
 
 *If you encounter any problems, don't worry! Here are solutions to the most common issues and what they mean.*
 
