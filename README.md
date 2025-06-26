@@ -1114,12 +1114,12 @@ If you need assistance or encounter issues:
 - **Storage**: SSD with 10GB+ free space
 - **Internet**: Stable broadband connection
 
-## 📞 Contact Information
+<!-- ## 📞 Contact Information
 
 - **Project Maintainer**: [Your Name]
 - **Email**: [your.email@example.com]
 - **GitHub**: [github.com/yourusername/hotel-ai-assistant]
-- **Website**: [www.your-hotel-ai-system.com]
+- **Website**: [www.your-hotel-ai-system.com] -->
 
 ## 🙏 Acknowledgments
 
