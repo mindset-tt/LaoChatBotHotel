@@ -1,5 +1,5 @@
 // Mock data for all APIs
-export const MOCK_DATA_ENABLED = import.meta.env.VITE_MOCK_DATA_ENABLED === 'true' || process.env.NODE_ENV === 'development';
+export const MOCK_DATA_ENABLED = import.meta.env.VITE_MOCK_DATA_ENABLED === 'true' || import.meta.env.DEV;
 
 // Auth mock data
 export const mockAuthUser = {

@@ -4,17 +4,32 @@ import "./App.css";
 import { RoutesManagement } from "./routes/Routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { ThemeProvider, CssBaseline } from "@mui/material";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { AuthProvider } from "./contexts/AuthContext";
+import { createAppTheme } from "./theme/theme";
+import { AppLoadingFallback } from "./components/common/LoadingStates";
+import { QUERY_CONFIG, FEATURES } from "./constants";
 
-// Create QueryClient instance outside component to prevent recreation
+/**
+ * Application Root Component
+ * 
+ * This component sets up the core application structure including:
+ * - Theme provider for consistent styling
+ * - Error boundary for graceful error handling
+ * - Authentication context for user management
+ * - Router for navigation
+ * - React Query for API state management
+ */
+
+// Create QueryClient instance outside component to prevent recreation on re-renders
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 30000, // 30 seconds
-      retry: 2,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: true,
+      staleTime: QUERY_CONFIG.STALE_TIME,
+      retry: QUERY_CONFIG.RETRY_ATTEMPTS,
+      refetchOnWindowFocus: QUERY_CONFIG.REFETCH_ON_WINDOW_FOCUS,
+      refetchOnReconnect: QUERY_CONFIG.REFETCH_ON_RECONNECT,
     },
     mutations: {
       retry: 1,
@@ -22,39 +37,42 @@ const queryClient = new QueryClient({
   },
 });
 
-// Loading fallback component
-const LoadingFallback = memo(() => (
-  <Box 
-    display="flex" 
-    flexDirection="column" 
-    alignItems="center" 
-    justifyContent="center" 
-    minHeight="100vh"
-    gap={2}
-  >
-    <CircularProgress size={60} />
-    <Typography variant="h6" color="textSecondary">
-      Loading application...
-    </Typography>
-  </Box>
-));
+// Create theme instance - could be dynamic based on user preference in the future
+const theme = createAppTheme('light');
 
-LoadingFallback.displayName = 'LoadingFallback';
-
+/**
+ * Main App Component
+ * 
+ * Renders the application with all necessary providers and wrappers.
+ * Uses a layered approach for clean separation of concerns:
+ * 1. Theme provider (styling)
+ * 2. Error boundary (error handling)
+ * 3. Auth provider (authentication state)
+ * 4. Router (navigation)
+ * 5. Query client (API state)
+ */
 function App() {
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<LoadingFallback />}>
-            <RoutesManagement />
-          </Suspense>
-          {process.env.NODE_ENV === 'development' && (
-            <ReactQueryDevtools initialIsOpen={false} />
-          )}
-        </QueryClientProvider>
-      </BrowserRouter>
-    </ErrorBoundary>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <ErrorBoundary>
+        <AuthProvider>
+          <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+              <div className="app-container">
+                <Suspense fallback={<AppLoadingFallback />}>
+                  <RoutesManagement />
+                </Suspense>
+              </div>
+              {/* Show React Query devtools only in development */}
+              {import.meta.env.DEV && FEATURES.REACT_QUERY_DEVTOOLS && (
+                <ReactQueryDevtools initialIsOpen={false} />
+              )}
+            </QueryClientProvider>
+          </BrowserRouter>
+        </AuthProvider>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 

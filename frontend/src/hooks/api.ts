@@ -23,7 +23,7 @@ import {
   mockSystemMetricsExtended
 } from './mockData';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 // API Client with interceptors for performance
 const apiClient = axios.create({
@@ -82,7 +82,20 @@ export const useLogin = () => {
       if (MOCK_DATA_ENABLED) {
         console.log('🎭 Mock: Login attempt', { username });
         if (username === 'admin' && password === 'password') {
-          return mockAuthUser;
+          return {
+            ...mockAuthUser,
+            role: 'admin',
+            user_id: '1',
+            email: 'admin@hotel.com'
+          };
+        } else if (username === 'user' && password === 'password') {
+          return {
+            ...mockAuthUser,
+            username: 'user',
+            role: 'user',
+            user_id: '2',
+            email: 'user@hotel.com'
+          };
         }
         throw new Error('Invalid credentials');
       }
@@ -678,6 +691,66 @@ export const useRoom = (id: string | number) => {
     staleTime: 60000,
     retry: false,
     enabled: !!id,
+  });
+};
+
+export const useCreateRoom = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (roomData: any) => {
+      if (MOCK_DATA_ENABLED) {
+        console.log('🎭 Mock: Creating room', roomData);
+        return { success: true, message: 'Room created successfully', id: Date.now() };
+      }
+      
+      const response = await apiClient.post('/rooms/', roomData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
+};
+
+export const useUpdateRoom = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async ({ id, ...roomData }: any) => {
+      if (MOCK_DATA_ENABLED) {
+        console.log('🎭 Mock: Updating room', id, roomData);
+        return { success: true, message: 'Room updated successfully' };
+      }
+      
+      const response = await apiClient.put(`/rooms/${id}`, roomData);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    },
+  });
+};
+
+export const useDeleteRoom = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (id: string | number) => {
+      if (MOCK_DATA_ENABLED) {
+        console.log('🎭 Mock: Deleting room', id);
+        return { success: true, message: 'Room deleted successfully' };
+      }
+      
+      const response = await apiClient.delete(`/rooms/${id}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    },
   });
 };
 

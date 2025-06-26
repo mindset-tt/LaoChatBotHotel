@@ -1,5 +1,1 @@
-import React from "react";
-
-export const PageDetailChats = () => {
-  return <div>PageChats</div>;
-};
+export { PageDetailChatsModern as PageDetailChats } from './PageDetailChatsModern';

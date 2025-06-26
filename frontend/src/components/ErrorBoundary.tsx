@@ -2,6 +2,16 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Box, Typography, Button, Alert, AlertTitle } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
+/**
+ * Error Boundary Component
+ * 
+ * Catches JavaScript errors anywhere in the child component tree,
+ * logs those errors, and displays a fallback UI instead of crashing.
+ * 
+ * This is a class component because error boundaries must be class components
+ * in React (hooks don't support error boundaries yet).
+ */
+
 interface Props {
   children: ReactNode;
 }
@@ -18,10 +28,18 @@ class ErrorBoundary extends Component<Props, State> {
     this.state = { hasError: false };
   }
 
+  /**
+   * Static method called when an error is thrown
+   * Used to update state to trigger the error UI
+   */
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
+  /**
+   * Called when an error has been thrown by a descendant component
+   * Used for logging and updating state with error details
+   */
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
     this.setState({
@@ -30,6 +48,9 @@ class ErrorBoundary extends Component<Props, State> {
     });
   }
 
+  /**
+   * Handler to reload the page - simple recovery mechanism
+   */
   handleReload = () => {
     window.location.reload();
   };
@@ -62,7 +83,7 @@ class ErrorBoundary extends Component<Props, State> {
             Reload Application
           </Button>
 
-          {process.env.NODE_ENV === 'development' && this.state.error && (
+          {import.meta.env.DEV && this.state.error && (
             <Box mt={3} width="100%">
               <Typography variant="h6" gutterBottom>
                 Error Details (Development Mode):

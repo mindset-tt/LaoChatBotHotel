@@ -1,7 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { 
+  MOCK_DATA_ENABLED, 
+  mockChatSessions, 
+  mockChatHistory 
+} from './mockData';
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 // Optimized API client for chat functionality
 const chatApiClient = axios.create({
@@ -11,6 +16,25 @@ const chatApiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// Fallback function for mock data
+const apiCallWithFallback = async <T>(
+  apiCall: () => Promise<T>,
+  mockData: T,
+  endpoint: string
+): Promise<T> => {
+  if (MOCK_DATA_ENABLED) {
+    console.log(`🎭 Using mock data for ${endpoint}`);
+    return mockData;
+  }
+
+  try {
+    return await apiCall();
+  } catch (error) {
+    console.warn(`⚠️ API call failed for ${endpoint}, falling back to mock data:`, error);
+    return mockData;
+  }
+};
 
 // Types for better TypeScript support
 export interface ChatMessage {
@@ -38,8 +62,14 @@ export const useChatHistoryList = () => {
   return useQuery({
     queryKey: ['chat', 'history', 'list'],
     queryFn: async (): Promise<ChatSession[]> => {
-      const response = await chatApiClient.get('/history/all');
-      return response.data;
+      return await apiCallWithFallback(
+        async () => {
+          const response = await chatApiClient.get('/history/all');
+          return response.data;
+        },
+        mockChatSessions,
+        'chat-history-list'
+      );
     },
     staleTime: 60000, // History list doesn't change often
     refetchOnMount: false,
@@ -52,8 +82,14 @@ export const useChatHistory = (sessionId: string | undefined) => {
     queryKey: ['chat', 'history', sessionId],
     queryFn: async (): Promise<ChatSession> => {
       if (!sessionId) throw new Error('Session ID required');
-      const response = await chatApiClient.get(`/history/${sessionId}`);
-      return response.data;
+      return await apiCallWithFallback(
+        async () => {
+          const response = await chatApiClient.get(`/history/${sessionId}`);
+          return response.data;
+        },
+        mockChatHistory.find(session => session.session_id === sessionId) || mockChatHistory[0],
+        `chat-history-${sessionId}`
+      );
     },
     enabled: !!sessionId,
     staleTime: 30000,
@@ -68,6 +104,17 @@ export const useSendMessage = () => {
   
   return useMutation({
     mutationFn: async (request: ChatRequest): Promise<any> => {
+      if (MOCK_DATA_ENABLED) {
+        console.log('🎭 Mock: Sending chat message', request);
+        return {
+          id: `msg_${Date.now()}`,
+          content: "This is a mock response from the AI assistant using optimized chat hooks.",
+          sender: 'assistant',
+          timestamp: new Date().toISOString(),
+          session_id: request.session_id || 'mock_session'
+        };
+      }
+      
       const response = await chatApiClient.post('/ask', request);
       return response.data;
     },
