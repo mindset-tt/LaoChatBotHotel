@@ -49,7 +49,7 @@ export const Navbar = () => {
           width={"30%"}
           sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", gap: 1 }}
         >
-          <img src={fnsLogo} alt="Logo" style={{ height: "40px" }} />
+          <img src={fnsLogo} alt="Logo" height={"40px"} />
           <Typography variant="h6" sx={{ color: "#414040" }}>Hotel AI</Typography>
         </Box>
         <Box width={"70%"}>
