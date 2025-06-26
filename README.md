@@ -3,7 +3,35 @@
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Node.js](https://img.shields.io/badge/node.js-14+-green.svg)](https://nodejs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-red.svg)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-19.1+-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8+-blue.svg)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.3+-purple.svg)](https://vitejs.dev/)
+
+<!-- Backend Dependencies -->
+[![PyTorch](https://img.shields.io/badge/PyTorch-latest-orange.svg)](https://pytorch.org/)
+[![Transformers](https://img.shields.io/badge/Transformers-4.46+-yellow.svg)](https://huggingface.co/transformers/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-latest-green.svg)](https://sqlalchemy.org/)
+[![Pydantic](https://img.shields.io/badge/Pydantic-latest-pink.svg)](https://pydantic.dev/)
+[![Uvicorn](https://img.shields.io/badge/Uvicorn-latest-green.svg)](https://www.uvicorn.org/)
+
+<!-- Frontend Dependencies -->
+[![Material-UI](https://img.shields.io/badge/Material--UI-7.1+-blue.svg)](https://mui.com/)
+[![React Router](https://img.shields.io/badge/React%20Router-7.6+-red.svg)](https://reactrouter.com/)
+[![TanStack Query](https://img.shields.io/badge/TanStack%20Query-5.80+-orange.svg)](https://tanstack.com/query/)
+[![Axios](https://img.shields.io/badge/Axios-1.9+-blue.svg)](https://axios-http.com/)
+[![Emotion](https://img.shields.io/badge/Emotion-11.14+-pink.svg)](https://emotion.sh/)
+
+<!-- AI/ML Dependencies -->
+[![Sentence Transformers](https://img.shields.io/badge/Sentence%20Transformers-latest-green.svg)](https://www.sbert.net/)
+[![PEFT](https://img.shields.io/badge/PEFT-latest-orange.svg)](https://huggingface.co/docs/peft/)
+[![Accelerate](https://img.shields.io/badge/Accelerate-latest-yellow.svg)](https://huggingface.co/docs/accelerate/)
+[![BitsAndBytes](https://img.shields.io/badge/BitsAndBytes-latest-red.svg)](https://github.com/TimDettmers/bitsandbytes)
+
+<!-- Monitoring & Utils -->
+[![Weights & Biases](https://img.shields.io/badge/W&B-latest-blue.svg)](https://wandb.ai/)
+[![Plotly](https://img.shields.io/badge/Plotly-latest-purple.svg)](https://plotly.com/)
+[![psutil](https://img.shields.io/badge/psutil-latest-green.svg)](https://psutil.readthedocs.io/)
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 > **A modern, intelligent hotel management system that makes hotel operations simple and guest interactions seamless through AI-powered assistance.**
