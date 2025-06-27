@@ -1,0 +1,69 @@
+# Google Cloud Platform Deployment
+# Uses Cloud Run for backend, Firebase Hosting for frontend
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hotel-ai-config
+data:
+  PROJECT_ID: "hotel-ai-assistant"
+  REGION: "us-central1"
+  BACKEND_SERVICE: "hotel-ai-backend"
+  
+---
+# Backend Cloud Run Service
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: hotel-ai-backend
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/execution-environment: gen2
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/memory: "4Gi"
+        run.googleapis.com/cpu: "2"
+        autoscaling.knative.dev/maxScale: "10"
+        autoscaling.knative.dev/minScale: "1"
+    spec:
+      containerConcurrency: 80
+      containers:
+      - image: gcr.io/PROJECT_ID/hotel-ai-backend:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: ENVIRONMENT
+          value: "production"
+        - name: PYTHONPATH
+          value: "/app"
+        - name: UVICORN_WORKERS
+          value: "1"
+        - name: UVICORN_WORKER_CLASS
+          value: "uvicorn.workers.UvicornWorker"
+        - name: GOOGLE_CLOUD_PROJECT
+          valueFrom:
+            configMapKeyRef:
+              name: hotel-ai-config
+              key: PROJECT_ID
+        resources:
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5

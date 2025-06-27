@@ -1,0 +1,78 @@
+name: hotel-ai-assistant
+metadata:
+  template: hotel-ai-assistant@0.0.1-beta
+
+# Infrastructure configuration
+infra:
+  provider: bicep
+  path: infra
+
+# Services configuration
+services:
+  # Backend API service (FastAPI with LLM)
+  backend:
+    project: ./backend
+    language: python
+    host: containerapp
+
+  # Frontend web application (React)
+  frontend:
+    project: ./frontend
+    language: js
+    host: staticwebapp
+
+# Hooks for deployment lifecycle
+hooks:
+  predeploy:
+    windows:
+      shell: pwsh
+      run: |
+        Write-Host "🔧 Setting up environment for deployment..."
+        # Build frontend with production API URL
+        cd frontend
+        $env:VITE_API_BASE_URL = "${BACKEND_URI}"
+        npm install
+        npm run build
+        cd ..
+        Write-Host "✅ Frontend build completed"
+    
+    posix:
+      shell: sh
+      run: |
+        echo "🔧 Setting up environment for deployment..."
+        # Build frontend with production API URL
+        cd frontend
+        export VITE_API_BASE_URL="${BACKEND_URI}"
+        npm install
+        npm run build
+        cd ..
+        echo "✅ Frontend build completed"
+
+  postdeploy:
+    windows:
+      shell: pwsh
+      run: |
+        Write-Host "🚀 Deployment completed successfully!"
+        Write-Host "📍 Frontend URL: ${FRONTEND_URI}"
+        Write-Host "📍 Backend API: ${BACKEND_URI}"
+        Write-Host "📍 Container Registry: ${AZURE_CONTAINER_REGISTRY_ENDPOINT}"
+        Write-Host ""
+        Write-Host "🎯 Next Steps:"
+        Write-Host "1. Configure your GitHub repository for continuous deployment"
+        Write-Host "2. Upload your AI models to the storage account"
+        Write-Host "3. Configure custom domains if needed"
+        Write-Host "4. Set up monitoring alerts in Azure Monitor"
+    
+    posix:
+      shell: sh
+      run: |
+        echo "🚀 Deployment completed successfully!"
+        echo "📍 Frontend URL: ${FRONTEND_URI}"
+        echo "📍 Backend API: ${BACKEND_URI}"
+        echo "📍 Container Registry: ${AZURE_CONTAINER_REGISTRY_ENDPOINT}"
+        echo ""
+        echo "🎯 Next Steps:"
+        echo "1. Configure your GitHub repository for continuous deployment"
+        echo "2. Upload your AI models to the storage account"
+        echo "3. Configure custom domains if needed"
+        echo "4. Set up monitoring alerts in Azure Monitor"
