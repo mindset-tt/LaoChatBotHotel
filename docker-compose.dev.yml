@@ -1,0 +1,44 @@
+# docker-compose.dev.yml
+# For development with models mounted from host
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.multi-stage
+      target: app-no-models  # Build without models
+    container_name: hotel-booking-backend-dev
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+    volumes:
+      # Mount models from host for development
+      - ./backend/models:/app/models:ro  # Read-only mount
+      # Mount source code for live reload
+      - ./backend:/app
+      # Mount data directory
+      - backend_data_dev:/app/data
+    restart: unless-stopped
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hotel-booking-frontend-dev
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  backend_data_dev:
+    driver: local
+
+networks:
+  default:
+    driver: bridge

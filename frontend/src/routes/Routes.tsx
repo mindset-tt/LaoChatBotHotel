@@ -17,36 +17,40 @@ import { ROUTES, USER_ROLES } from "../constants";
  */
 
 // Lazy load all page components for better performance and code splitting
-const PageDetailChats = React.lazy(() => 
+const PageDetailChats = React.lazy(() =>
   import("../pages/detail-chats/PageDetailChats").then(m => ({ default: m.PageDetailChats }))
 );
 
-const PageNewChatsOptimized = React.lazy(() => 
+const PageNewChatsOptimized = React.lazy(() =>
   import("../pages/new-chats/PageNewChatsModern").then(m => ({ default: m.PageNewChatsModern }))
 );
 
-const Login = React.lazy(() => 
+const Login = React.lazy(() =>
   import("../pages/login/Login").then(m => ({ default: m.Login }))
 );
 
-const Room = React.lazy(() => 
+const Room = React.lazy(() =>
   import("../pages/hotel/room/Room").then(m => ({ default: m.Room }))
 );
 
-const Dashboard = React.lazy(() => 
+const Dashboard = React.lazy(() =>
   import("../pages/dashboard/Dashboard").then(m => ({ default: m.Dashboard }))
 );
 
-const Bookings = React.lazy(() => 
+const Bookings = React.lazy(() =>
   import("../pages/bookings/Bookings").then(m => ({ default: m.Bookings }))
 );
 
-const Analytics = React.lazy(() => 
+const Analytics = React.lazy(() =>
   import("../pages/analytics/Analytics").then(m => ({ default: m.Analytics }))
 );
 
-const SystemManagement = React.lazy(() => 
+const SystemManagement = React.lazy(() =>
   import("../pages/system/SystemManagement").then(m => ({ default: m.SystemManagement }))
+);
+
+const RefreshToken = React.lazy(() =>
+  import("../components/RefreshToken").then(m => ({ default: m.RefreshToken }))
 );
 
 /**
@@ -59,6 +63,7 @@ const SystemManagement = React.lazy(() =>
  */
 export const RoutesManagement = () => {
   return (
+    
     <Routes>
       {/* Public routes - only accessible when not authenticated */}
       <Route path={ROUTES.LOGIN} element={
@@ -68,12 +73,12 @@ export const RoutesManagement = () => {
           </Suspense>
         </PublicRoute>
       } />
-      
+
       {/* All other routes use MainLayout for consistent navigation */}
       <Route element={<MainLayout />}>
         {/* Default redirect to chat */}
         <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.CHATS} replace />} />
-        
+
         {/* Chat routes - accessible to everyone with navbar */}
         <Route path={ROUTES.CHATS} element={
           <Suspense fallback={<PageLoadingFallback />}>
@@ -85,7 +90,7 @@ export const RoutesManagement = () => {
             <PageNewChatsOptimized />
           </Suspense>
         } />
-        
+
         {/* Protected routes - require authentication and proper role */}
         {/* Dashboard - requires user role or higher */}
         <Route path={ROUTES.DASHBOARD} element={
@@ -95,7 +100,7 @@ export const RoutesManagement = () => {
             </Suspense>
           </ProtectedRoute>
         } />
-        
+
         {/* Rooms - requires user role or higher */}
         <Route path={ROUTES.ROOMS} element={
           <ProtectedRoute requiredRole={USER_ROLES.USER}>
@@ -104,7 +109,7 @@ export const RoutesManagement = () => {
             </Suspense>
           </ProtectedRoute>
         } />
-        
+
         {/* Bookings - requires user role or higher */}
         <Route path={ROUTES.BOOKINGS} element={
           <ProtectedRoute requiredRole={USER_ROLES.USER}>
@@ -113,7 +118,7 @@ export const RoutesManagement = () => {
             </Suspense>
           </ProtectedRoute>
         } />
-        
+
         {/* Analytics - requires admin role */}
         <Route path={ROUTES.ANALYTICS} element={
           <ProtectedRoute requiredRole={USER_ROLES.ADMIN}>
@@ -122,7 +127,7 @@ export const RoutesManagement = () => {
             </Suspense>
           </ProtectedRoute>
         } />
-        
+
         {/* System Management - requires admin role */}
         <Route path={ROUTES.SYSTEM} element={
           <ProtectedRoute requiredRole={USER_ROLES.ADMIN}>
@@ -131,7 +136,7 @@ export const RoutesManagement = () => {
             </Suspense>
           </ProtectedRoute>
         } />
-        
+
         {/* Chat detail view for authenticated users */}
         <Route path={ROUTES.CHAT_DETAILS} element={
           <ProtectedRoute requiredRole={USER_ROLES.USER}>
@@ -140,8 +145,17 @@ export const RoutesManagement = () => {
             </Suspense>
           </ProtectedRoute>
         } />
+
+        {/* Refresh Token Demo - requires user role or higher */}
+        <Route path={ROUTES.REFRESH_TOKEN_DEMO} element={
+          <ProtectedRoute requiredRole={USER_ROLES.USER}>
+            <Suspense fallback={<PageLoadingFallback />}>
+              <RefreshToken />
+            </Suspense>
+          </ProtectedRoute>
+        } />
       </Route>
-      
+
       {/* Catch all route - redirect to home */}
       <Route path="*" element={<Navigate to={ROUTES.CHATS} replace />} />
     </Routes>

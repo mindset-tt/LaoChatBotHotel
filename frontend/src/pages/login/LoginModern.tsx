@@ -85,17 +85,8 @@ export const LoginModern: React.FC = () => {
         password: formData.password
       });
 
-      // Create user object with proper role mapping for auth context
-      const userRole = result.role || (formData.username.toLowerCase() === 'admin' ? 'admin' : 'user');
-      const user = {
-        id: result.user_id || result.id || '1',
-        username: result.username || formData.username,
-        email: result.email || `${formData.username}@hotel.com`,
-        role: userRole as 'admin' | 'user' | 'guest',
-      };
-
-      // Update auth context with token and user data
-      login(result.access_token || result.token || 'mock-token', user);
+      // Use the new login method that expects the full login response
+      login(result);
       
       // Redirect to intended page or dashboard
       const from = location.state?.from?.pathname || ROUTES.DASHBOARD;

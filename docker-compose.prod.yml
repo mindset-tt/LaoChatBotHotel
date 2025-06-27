@@ -1,0 +1,96 @@
+# Ultra-optimized production docker-compose
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.multi-stage
+      target: app-with-models
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    image: hotel-booking-backend:${VERSION:-latest}
+    container_name: hotel-booking-backend-prod
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=production
+      - UVICORN_WORKERS=2
+      - UVICORN_WORKER_CLASS=uvicorn.workers.UvicornWorker
+    volumes:
+      # Only mount data, models are baked in
+      - backend_data_prod:/app/data
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+          cpus: '4.0'
+        reservations:
+          memory: 4G
+          cpus: '2.0'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    image: hotel-booking-frontend:${VERSION:-latest}
+    container_name: hotel-booking-frontend-prod
+    ports:
+      - "80:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 64M
+          cpus: '0.1'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+volumes:
+  backend_data_prod:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/hotel-booking/data
+
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

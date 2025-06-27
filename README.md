@@ -1,8 +1,8 @@
 # 🏨 Hotel AI Intelligent Assistant
 
 [![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Node.js](https://img.shields.io/badge/node.js-14+-green.svg)](https://nodejs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-red.svg)](https://fastapi.tiangolo.com/)
+[![Node.js](https://img.shields.io/badge/node.js-18+-green.svg)](https://nodejs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-latest-red.svg)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19.1+-blue.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8+-blue.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-6.3+-purple.svg)](https://vitejs.dev/)
@@ -463,36 +463,39 @@ TestTrainningWithSalior/
 
 ## 🚀 Quick Installation Guide
 
-### ⚡ Fast Setup (5 Minutes)
+## ⚡ Quick Start (5 Minutes)
 
-> **Prerequisites:** [Python 3.8+](https://python.org) • [Node.js 14+](https://nodejs.org) • [Git](https://git-scm.com)
+> **Prerequisites:** [Python 3.8+](https://python.org) • [Node.js 18+](https://nodejs.org) • [Git](https://git-scm.com)
 
-```bash
-# 1️⃣ Get the project
+### 1. Clone & Setup
+```powershell
+# Clone the repository
 git clone <repository-url>
 cd TestTrainningWithSalior
 
-# 2️⃣ Setup backend (server)
+# Start backend (PowerShell)
 cd backend
-pip install -r requirements.txt
-python setup_models.py  # First time only - downloads AI models
-python main.py &        # Runs in background
+python -m pip install -r requirements.txt
+python setup_models.py  # First time only - downloads AI models (~2GB)
+python main.py
+```
 
-# 3️⃣ Setup frontend (in new terminal)
-cd ../frontend
+### 2. Start Frontend (New Terminal)
+```powershell
+# Start frontend
+cd frontend
 npm install
 npm run dev
 ```
 
-### ✅ Success Check
-
+### 3. ✅ Verify Installation
 | Service | URL | Expected Result |
 |---------|-----|-----------------|
 | **🔧 Backend API** | `http://localhost:8000/docs` | API documentation loads |
 | **🌐 Frontend App** | `http://localhost:5173` | Hotel dashboard appears |
 | **🤖 AI Chat Test** | Click "Chat" → Type "Hello" | AI responds |
 
-🎉 **Ready!** You should see the Hotel AI dashboard with working chat functionality.
+🎉 **Ready!** Your Hotel AI Assistant is now running!
 
 <details>
 <summary><strong>🔧 Detailed Installation Guide</strong></summary>

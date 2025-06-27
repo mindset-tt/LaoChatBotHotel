@@ -83,18 +83,23 @@ export const useLogin = () => {
         console.log('🎭 Mock: Login attempt', { username });
         if (username === 'admin' && password === 'password') {
           return {
-            ...mockAuthUser,
-            role: 'admin',
+            access_token: 'mock_access_token_admin',
+            refresh_token: 'mock_refresh_token_admin',
+            token_type: 'bearer',
+            expires_in: 3600,
+            username: 'admin',
             user_id: '1',
-            email: 'admin@hotel.com'
+            role: 'admin'
           };
         } else if (username === 'user' && password === 'password') {
           return {
-            ...mockAuthUser,
+            access_token: 'mock_access_token_user',
+            refresh_token: 'mock_refresh_token_user',
+            token_type: 'bearer',
+            expires_in: 3600,
             username: 'user',
-            role: 'user',
             user_id: '2',
-            email: 'user@hotel.com'
+            role: 'user'
           };
         }
         throw new Error('Invalid credentials');

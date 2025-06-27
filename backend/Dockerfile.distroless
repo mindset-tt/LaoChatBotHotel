@@ -1,0 +1,49 @@
+# Distroless Dockerfile for Ultra-Secure Backend
+# Using Google's distroless images for minimal attack surface
+FROM python:3.11-slim as builder
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+# Production stage with distroless
+FROM gcr.io/distroless/python3-debian11:nonroot
+
+# Copy Python packages from builder
+COPY --from=builder /root/.local /home/nonroot/.local
+
+# Set environment
+ENV PATH=/home/nonroot/.local/bin:$PATH
+ENV PYTHONPATH=/app
+
+WORKDIR /app
+
+# Copy application with proper ownership
+COPY --chown=nonroot:nonroot config/ ./config/
+COPY --chown=nonroot:nonroot database/ ./database/
+COPY --chown=nonroot:nonroot middleware/ ./middleware/
+COPY --chown=nonroot:nonroot routes/ ./routes/
+COPY --chown=nonroot:nonroot services/ ./services/
+COPY --chown=nonroot:nonroot utils/ ./utils/
+COPY --chown=nonroot:nonroot *.py ./
+
+# Copy essential models only
+COPY --chown=nonroot:nonroot models/knowledge_base/knowledge_base_with_embeddings.pt ./models/knowledge_base/
+COPY --chown=nonroot:nonroot models/embeddings/sailor2-1b-vangvieng-finetuned/best-checkpoint/ ./models/embeddings/sailor2-1b-vangvieng-finetuned/best-checkpoint/
+
+# Switch to non-root user (already set in distroless)
+USER nonroot
+
+EXPOSE 8000
+
+# Use exec form for better signal handling
+ENTRYPOINT ["python", "-m", "uvicorn", "main:app"]
+CMD ["--host", "0.0.0.0", "--port", "8000"]

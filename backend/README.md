@@ -1,103 +1,463 @@
-# 🏨 Advanced Hotel Management & AI Chatbot System
+# 🏨 Hotel Management Backend API
 
-A comprehensive, production-ready hotel management system with AI-powered chatbot optimized for RTX 3050 Ti Mobile GPU. Built with FastAPI, featuring advanced analytics, notifications, caching, and security.
+A comprehensive, production-ready hotel management system with AI-powered chatbot, built with FastAPI and optimized for RTX 3050 Ti Mobile GPU.
 
-## 🌟 Major Upgrades Completed
+## 🚀 Technology Stack
 
-This project has been completely refactored from a monolithic application into a modular, production-ready system with many new advanced features.
+| Technology | Purpose | Version |
+|------------|---------|---------|
+| **FastAPI** | Web Framework & API | Latest |
+| **PyTorch** | AI/ML Model Support | Latest |
+| **Transformers** | Hugging Face Models | 4.46.3 |
+| **SQLite** | Database | Built-in |
+| **Uvicorn** | ASGI Server | Latest |
+| **Pydantic** | Data Validation | Latest |
 
-## 🚀 New Features Added
+## ✨ Major Features
+
+### 🤖 **AI-Powered Chatbot**
+- **Fine-tuned Model:** Sailor2-1B optimized for hotel domain
+- **RAG System:** Retrieval-Augmented Generation with knowledge base
+- **Context Awareness:** Maintains conversation context
+- **Multi-language:** Supports multiple languages including Lao
+- **GPU Optimization:** Efficient memory usage for RTX 3050 Ti
 
 ### 📊 **Analytics & Reporting**
-- `/analytics/chat/insights/` - Comprehensive chat analytics
-- `/analytics/bookings/insights/` - Booking trends and utilization
-- `/analytics/performance/` - System performance metrics
+- **Chat Insights:** Conversation analytics and patterns
+- **Booking Analytics:** Trends, utilization, and forecasting
+- **Performance Metrics:** System monitoring and health checks
+- **Business Intelligence:** Revenue analysis and occupancy rates
 
-### 💾 **Backup & Export**
-- `/backup/chat-history/export/` - Export chat history (JSON/CSV)
-- `/backup/bookings/export/` - Export booking data
-- `/backup/database/` - Full database backup
-- `/backup/statistics/` - System statistics
-
-### ⚙️ **Configuration Management**
-- `/config/` - View current configuration
-- `/config/thresholds/` - Update AI model thresholds
-- `/config/keywords/` - Manage intent keywords
-
-### 🤖 **Model Management**
-- `/models/status/` - Check model loading status
-- `/models/cleanup/` - Clean GPU memory
-- `/models/reload/` - Reload ML models
-- `/models/memory/` - Detailed memory usage
+### 💾 **Data Management**
+- **Export Capabilities:** JSON/CSV export for chat history and bookings
+- **Database Backup:** Full database backup and restoration
+- **Configuration Management:** Runtime configuration updates
+- **Data Validation:** Comprehensive input validation and sanitization
 
 ### 🔒 **Security & Monitoring**
-- Rate limiting middleware (100 requests/minute)
-- Enhanced error handling and logging
-- Comprehensive health checks
-- Real-time system metrics
+- **Rate Limiting:** 100 requests/minute per client
+- **Authentication:** JWT-based authentication system
+- **Error Handling:** Comprehensive error logging and reporting
+- **Health Checks:** Real-time system health monitoring
 
-### 📈 **Enhanced System Monitoring**
-- `/system/health/` - Health check with database/model status
-- `/system/metrics/` - Comprehensive system metrics
-- GPU memory tracking and optimization
-- Database statistics and trends
-
-## Project Structure
+## 📁 Project Architecture
 
 ```
-├── main.py                     # Main application entry point
+backend/
+├── main.py                     # Application entry point
 ├── requirements.txt            # Python dependencies
-├── config/
-│   └── settings.py            # Configuration and constants
-├── models/
-│   └── schemas.py             # Pydantic models
-├── database/
-│   └── operations.py          # Database operations
-├── services/
-│   ├── auth.py                # Authentication service
-│   ├── ml_models.py           # ML model loading and inference
-│   ├── conversation.py        # Conversation management
-│   └── chatbot.py             # Main chatbot orchestrator
-├── routes/
-│   ├── auth_routes.py         # Authentication endpoints
-│   ├── booking_routes.py      # Booking management endpoints
-│   ├── room_routes.py         # Room management endpoints
-│   ├── chatbot_routes.py      # Chatbot endpoints
-│   ├── history_routes.py      # Chat history endpoints
-│   ├── system_routes.py       # System status endpoints
-│   ├── config_routes.py       # Configuration management
-│   ├── backup_routes.py       # Backup and export features
-│   ├── analytics_routes.py    # Analytics and reporting
-│   └── model_routes.py        # Model management
-├── middleware/
-│   ├── security.py            # Rate limiting and security
-│   └── error_handling.py      # Enhanced error handling
-└── utils/
-    └── logging_config.py      # Logging configuration
+├── setup_models.py            # AI model setup script
+├── deploy.py                  # Deployment utilities
+├── config/                    # Configuration management
+│   ├── __init__.py
+│   ├── environment.py         # Environment variables
+│   └── settings.py           # Application settings
+├── database/                  # Database layer
+│   ├── __init__.py
+│   ├── models.py             # Database models
+│   └── operations.py         # Database operations
+├── middleware/                # Custom middleware
+│   ├── __init__.py
+│   ├── error_handling.py     # Error handling middleware
+│   └── security.py           # Security & rate limiting
+├── models/                    # AI models & schemas
+│   ├── __init__.py
+│   ├── schemas.py            # Pydantic schemas
+│   ├── checkpoints/          # Fine-tuned model checkpoints
+│   └── knowledge_base/       # RAG knowledge base
+├── routes/                    # API endpoints
+│   ├── __init__.py
+│   ├── analytics_routes.py   # Analytics endpoints
+│   ├── auth_routes.py        # Authentication
+│   ├── backup_routes.py      # Data export/backup
+│   ├── booking_routes.py     # Booking management
+│   ├── chatbot_routes.py     # AI chat endpoints
+│   ├── config_routes.py      # Configuration management
+│   ├── dashboard_routes.py   # Dashboard data
+│   ├── history_routes.py     # Chat history
+│   ├── model_routes.py       # Model management
+│   ├── notification_routes.py # Notifications
+│   ├── room_routes.py        # Room management
+│   └── system_routes.py      # System monitoring
+├── services/                  # Business logic
+│   ├── __init__.py
+│   ├── analytics.py          # Analytics service
+│   ├── auth.py               # Authentication service
+│   ├── cache.py              # Caching service
+│   ├── chatbot.py            # Chatbot orchestrator
+│   ├── conversation.py       # Conversation management
+│   ├── metrics.py            # Metrics collection
+│   ├── ml_models.py          # ML model loading/inference
+│   ├── notifications.py     # Notification service
+│   └── security.py           # Security utilities
+└── utils/                     # Utility functions
+    ├── __init__.py
+    └── logging_config.py     # Logging configuration
 ```
 
-## Key Improvements
+## 🚀 Quick Start
 
-### 🎯 **Architecture**
-1. **Separation of Concerns**: Each module has a specific responsibility
-2. **Maintainability**: Easier to find and modify specific functionality
-3. **Testability**: Individual modules can be tested in isolation
-4. **Reusability**: Services can be reused across different routes
-5. **Scalability**: Easy to add new features without cluttering existing code
+### Prerequisites
 
-### 🔧 **Performance & Reliability**
-- Rate limiting to prevent abuse
-- Enhanced error handling with detailed logging
-- GPU memory optimization and monitoring
-- Health checks for system reliability
-- Database backup and recovery
+- **Python:** 3.8 or higher
+- **GPU:** RTX 3050 Ti or better (4GB+ VRAM recommended)
+- **RAM:** 8GB minimum (16GB recommended)
+- **Storage:** 10GB free space for models
 
-### 📊 **Business Intelligence**
-- Chat conversation analytics
-- Booking trends and patterns
-- Room utilization insights
-- System performance monitoring
-- Data export capabilities
+### Installation
+
+```powershell
+# Navigate to backend directory
+cd backend
+
+# Install dependencies
+python -m pip install -r requirements.txt
+
+# Setup AI models (first time only - downloads ~2GB)
+python setup_models.py
+
+# Start the server
+python main.py
+```
+
+### Verification
+
+| Endpoint | URL | Purpose |
+|----------|-----|---------|
+| **API Docs** | `http://localhost:8000/docs` | Interactive API documentation |
+| **Health Check** | `http://localhost:8000/system/health/` | System status |
+| **Model Status** | `http://localhost:8000/models/status/` | AI model loading status |
+
+## 🔌 API Endpoints
+
+### 🤖 **AI Chatbot**
+```http
+POST /chatbot/ask/                 # Send message to AI
+GET /chatbot/history/              # Get conversation history
+GET /chatbot/sessions/             # List chat sessions
+POST /chatbot/clear_session/       # Clear conversation state
+```
+
+### 🏨 **Hotel Management**
+```http
+# Rooms
+GET /rooms/                        # List all rooms
+GET /rooms/available/              # Available rooms only
+POST /rooms/                       # Create new room
+PUT /rooms/{id}                    # Update room
+DELETE /rooms/{id}                 # Delete room
+
+# Bookings
+GET /bookings/                     # List bookings
+POST /bookings/manual/             # Create manual booking
+PUT /bookings/update/              # Update booking
+POST /bookings/cancel/             # Cancel booking
+```
+
+### 📊 **Analytics & Reporting**
+```http
+GET /analytics/chat/insights/      # Chat conversation analytics
+GET /analytics/bookings/insights/  # Booking trends and patterns
+GET /analytics/performance/        # System performance metrics
+GET /analytics/revenue/            # Revenue analysis
+```
+
+### 💾 **Data Management**
+```http
+GET /backup/chat-history/export/   # Export chat history (JSON/CSV)
+GET /backup/bookings/export/       # Export booking data
+POST /backup/database/             # Create database backup
+GET /backup/statistics/            # System statistics
+```
+
+### ⚙️ **Configuration**
+```http
+GET /config/                       # View current configuration
+PUT /config/thresholds/            # Update AI model thresholds
+PUT /config/keywords/              # Manage intent keywords
+```
+
+### 🔧 **System Management**
+```http
+GET /system/health/                # Comprehensive health check
+GET /system/metrics/               # System performance metrics
+GET /models/status/                # AI model status
+POST /models/cleanup/              # Clean GPU memory
+POST /models/reload/               # Reload AI models
+GET /models/memory/                # Detailed memory usage
+```
+
+## ⚙️ Configuration
+
+### Environment Variables
+
+Create a `.env` file in the backend directory:
+
+```env
+# Database Configuration
+DATABASE_URL=sqlite:///./hotel_booking.db
+
+# AI Model Settings
+MODEL_PATH=./models/checkpoints/sailor2-1b-vangvieng-finetuned/
+KNOWLEDGE_BASE_PATH=./models/knowledge_base/knowledge_base_with_embeddings.pt
+MAX_GPU_MEMORY=3500  # MB for RTX 3050 Ti Mobile
+USE_4BIT_QUANTIZATION=true
+
+# Server Configuration
+API_HOST=0.0.0.0
+API_PORT=8000
+CORS_ORIGINS=["http://localhost:5173", "http://localhost:3000"]
+
+# Performance Settings
+CHAT_TIMEOUT=30  # seconds
+MAX_CONCURRENT_CHATS=10
+RATE_LIMIT_REQUESTS=100  # requests per minute
+```
+
+### Model Configuration
+
+The system automatically detects and loads:
+
+1. **Fine-tuned LLM:** Latest checkpoint in `models/checkpoints/sailor2-1b-vangvieng-finetuned/`
+2. **Knowledge Base:** RAG embeddings from `models/knowledge_base/`
+3. **Embeddings:** Additional embeddings from `models/embeddings/`
+
+## 🔧 Development
+
+### Development Mode
+
+```powershell
+# Run with auto-reload
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# Run with specific environment
+python -m uvicorn main:app --reload --env-file .env.development
+```
+
+### Testing
+
+```powershell
+# Run tests
+python -m pytest
+
+# Run with coverage
+python -m pytest --cov=.
+
+# Test specific module
+python -m pytest tests/test_chatbot.py
+```
+
+### Debugging
+
+```powershell
+# Enable debug logging
+export LOG_LEVEL=DEBUG
+python main.py
+
+# Test model loading
+python test_checkpoint.py
+
+# Check GPU memory
+python -c "import torch; print(torch.cuda.get_device_properties(0))"
+```
+
+## 📊 Monitoring & Analytics
+
+### System Health Monitoring
+
+The backend provides comprehensive monitoring:
+
+```http
+GET /system/health/
+```
+
+Returns:
+- Database connectivity status
+- AI model loading status
+- GPU memory usage
+- System resource utilization
+- API response times
+
+### Performance Metrics
+
+```http
+GET /system/metrics/
+```
+
+Provides:
+- Request count and response times
+- Error rates and types
+- Memory and CPU usage
+- Active connections
+- Cache hit rates
+
+### Business Analytics
+
+```http
+GET /analytics/chat/insights/
+```
+
+Includes:
+- Message volume trends
+- Common guest inquiries
+- Response satisfaction ratings
+- Peak usage times
+- Language preferences
+
+## 🚀 Deployment
+
+### Production Deployment
+
+```powershell
+# Build optimized container
+docker build -f Dockerfile.multi-stage -t hotel-backend:latest .
+
+# Run in production mode
+docker run -p 8000:8000 -e ENV=production hotel-backend:latest
+```
+
+### Docker Compose
+
+```yaml
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+      - DATABASE_URL=sqlite:///./data/hotel_booking.db
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+```
+
+### Performance Optimization
+
+1. **GPU Memory Management**
+   - Automatic cleanup after chat sessions
+   - 4-bit quantization for memory efficiency
+   - Batch processing for multiple requests
+
+2. **Database Optimization**
+   - Connection pooling
+   - Query optimization
+   - Automatic indexing
+
+3. **Caching Strategy**
+   - Response caching for common queries
+   - Model weight caching
+   - Static content caching
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+**GPU Memory Errors**
+```powershell
+# Check GPU availability
+python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}')"
+
+# Clean GPU memory
+curl -X POST http://localhost:8000/models/cleanup/
+```
+
+**Model Loading Issues**
+```powershell
+# Check model status
+curl http://localhost:8000/models/status/
+
+# Reload models
+curl -X POST http://localhost:8000/models/reload/
+```
+
+**Database Connection Problems**
+```powershell
+# Check database health
+curl http://localhost:8000/system/health/
+
+# View database statistics
+curl http://localhost:8000/backup/statistics/
+```
+
+### Performance Issues
+
+1. **High Response Times**
+   - Check GPU memory usage
+   - Monitor system resources
+   - Review error logs
+
+2. **Memory Leaks**
+   - Monitor memory usage trends
+   - Use model cleanup endpoints
+   - Restart services if needed
+
+3. **Database Slowdowns**
+   - Check query performance
+   - Optimize database indexes
+   - Monitor connection pool
+
+## 🤝 Contributing
+
+### Development Setup
+
+```powershell
+# Clone and setup
+git clone <repository-url>
+cd backend
+
+# Create virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux/Mac
+
+# Install dependencies
+pip install -r requirements.txt
+pip install -r requirements-dev.txt  # Development dependencies
+
+# Setup pre-commit hooks
+pre-commit install
+```
+
+### Code Standards
+
+- **Style:** Follow PEP 8 guidelines
+- **Type Hints:** Use type annotations
+- **Documentation:** Include docstrings
+- **Testing:** Write tests for new features
+- **Logging:** Use structured logging
+
+### Adding New Features
+
+1. **Create Feature Branch**
+   ```powershell
+   git checkout -b feature/new-feature
+   ```
+
+2. **Implement Feature**
+   - Add route in appropriate `routes/` file
+   - Implement business logic in `services/`
+   - Add database operations if needed
+   - Write comprehensive tests
+
+3. **Update Documentation**
+   - Update API documentation
+   - Add configuration options
+   - Update this README if needed
+
+4. **Submit Pull Request**
+   - Ensure tests pass
+   - Follow commit message conventions
+   - Include feature description
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
+
+---
+
+**Built with ❤️ for intelligent hotel management**
 
 ### 🛡️ **Security**
 - Rate limiting middleware

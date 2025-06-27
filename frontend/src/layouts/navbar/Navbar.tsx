@@ -78,6 +78,12 @@ export const Navbar = () => {
       icon: <Computer />, 
       requiredRole: "admin" as const
     },
+    { 
+      label: "Refresh Token Demo", 
+      path: "/refresh-token-demo", 
+      icon: <Security />, 
+      requiredRole: "user" as const
+    },
   ];
 
   // Filter navigation items based on user permissions

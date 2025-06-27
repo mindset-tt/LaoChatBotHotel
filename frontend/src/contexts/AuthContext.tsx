@@ -1,11 +1,12 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { STORAGE_KEYS, USER_ROLES, ROLE_HIERARCHY } from '../constants';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { STORAGE_KEYS, USER_ROLES, ROLE_HIERARCHY, API_CONFIG } from '../constants';
+import { tokenManager, TokenData } from '../utils/tokenManager';
 
 /**
  * Authentication Context
  * 
  * Provides authentication state and methods throughout the application.
- * Handles user login/logout, permission checking, and persists auth state.
+ * Handles user login/logout, permission checking, token refresh, and persists auth state.
  */
 
 // Type definitions for better type safety
@@ -20,9 +21,21 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (token: string, userData: User) => void;
+  login: (loginResponse: LoginResponse) => void;
   logout: () => void;
+  refreshToken: () => Promise<boolean>;
+  getValidToken: () => Promise<string | null>;
   hasPermission: (requiredRole: 'admin' | 'user') => boolean;
+}
+
+interface LoginResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  expires_in: number;
+  username: string;
+  user_id: string;
+  role: string;
 }
 
 // Create context with undefined default to enforce provider usage
@@ -59,19 +72,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
      * Initialize authentication state from localStorage
      * This runs once when the app loads
      */
-    const initializeAuth = () => {
-      const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    const initializeAuth = async () => {
       const storedUserData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
       
-      if (token && storedUserData) {
+      if (storedUserData && tokenManager.hasRefreshToken()) {
         try {
           const userData = JSON.parse(storedUserData);
-          setUser(userData);
+          
+          // Check if we have a valid token or can refresh
+          const validToken = await tokenManager.getValidAccessToken();
+          if (validToken) {
+            setUser(userData);
+          } else {
+            // Clear invalid data
+            localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+            tokenManager.clearTokens();
+          }
         } catch (error) {
-          console.error('Error parsing stored user data:', error);
+          console.error('Error initializing auth:', error);
           // Clear corrupted data
-          localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-          localStorage.removeItem(STORAGE_KEYS.USER_DATA);        }
+          localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+          tokenManager.clearTokens();
+        }
       }
       setIsLoading(false);
     };
@@ -80,23 +102,81 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   /**
-   * Login method - stores token and user data
+   * Login method - stores tokens and user data
    */
-  const login = (token: string, userData: User) => {
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+  const login = useCallback((loginResponse: LoginResponse) => {
+    const tokenData: TokenData = {
+      accessToken: loginResponse.access_token,
+      refreshToken: loginResponse.refresh_token,
+      expiresIn: loginResponse.expires_in,
+      tokenType: loginResponse.token_type,
+    };
+    
+    tokenManager.storeTokens(tokenData);
+    
+    const userData: User = {
+      id: loginResponse.user_id,
+      username: loginResponse.username,
+      role: loginResponse.role as 'admin' | 'user' | 'guest',
+    };
+    
     localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
     setUser(userData);
-  };
+  }, []);
 
   /**
    * Logout method - clears all stored auth data
    */
-  const logout = () => {
-    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-    localStorage.removeItem(STORAGE_KEYS.USERNAME);
-    setUser(null);
-  };
+  const logout = useCallback(async () => {
+    try {
+      // Call logout endpoint to invalidate refresh token on server
+      const refreshToken = tokenManager.getRefreshToken();
+      if (refreshToken) {
+        await fetch(`${API_CONFIG.BASE_URL}/auth/logout/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refresh_token: refreshToken }),
+        });
+      }
+    } catch (error) {
+      console.error('Logout API call failed:', error);
+    } finally {
+      // Clear local storage regardless of API call success
+      localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+      localStorage.removeItem(STORAGE_KEYS.USERNAME);
+      tokenManager.clearTokens();
+      setUser(null);
+    }
+  }, []);
+
+  /**
+   * Refresh token method
+   */
+  const refreshToken = useCallback(async (): Promise<boolean> => {
+    try {
+      await tokenManager.refreshAccessToken();
+      return true;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      logout();
+      return false;
+    }
+  }, [logout]);
+
+  /**
+   * Get valid token method - returns token or refreshes if needed
+   */
+  const getValidToken = useCallback(async (): Promise<string | null> => {
+    try {
+      return await tokenManager.getValidAccessToken();
+    } catch (error) {
+      console.error('Error getting valid token:', error);
+      logout();
+      return null;
+    }
+  }, [logout]);
 
   /**
    * Permission checker based on role hierarchy
@@ -123,6 +203,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading,
     login,
     logout,
+    refreshToken,
+    getValidToken,
     hasPermission,
   };
 

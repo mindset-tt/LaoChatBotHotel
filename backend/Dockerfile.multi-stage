@@ -1,0 +1,102 @@
+# Ultra-optimized multi-stage Dockerfile for production
+# Minimal image size with maximum performance
+
+# Stage 1: Base dependencies
+FROM python:3.11-slim as base
+
+# Install system dependencies in minimal layers
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && apt-get autoremove -y
+
+WORKDIR /app
+
+# Set optimized environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONPATH=/app
+
+# Copy and install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip cache purge \
+    && find /usr/local -name '*.pyc' -delete \
+    && find /usr/local -name '__pycache__' -type d -exec rm -rf {} + \
+    && rm -rf /root/.cache
+
+# Stage 2: Application runtime (minimal)
+FROM python:3.11-slim as runtime
+
+# Install only runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && useradd --create-home --shell /bin/bash --uid 1001 app
+
+# Copy Python packages from base stage
+COPY --from=base /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=base /usr/local/bin /usr/local/bin
+
+WORKDIR /app
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# Copy application code with optimal order
+COPY --chown=app:app config/ ./config/
+COPY --chown=app:app database/ ./database/
+COPY --chown=app:app middleware/ ./middleware/
+COPY --chown=app:app routes/ ./routes/
+COPY --chown=app:app services/ ./services/
+COPY --chown=app:app utils/ ./utils/
+COPY --chown=app:app *.py ./
+
+# Create model directories
+RUN mkdir -p models/embeddings models/knowledge_base \
+    && chown -R app:app models/
+
+# Stage 3: Production with models
+FROM runtime as app-with-models
+
+# Copy essential models only (production-ready)
+COPY --chown=app:app models/knowledge_base/knowledge_base_with_embeddings.pt ./models/knowledge_base/
+COPY --chown=app:app models/embeddings/sailor2-1b-vangvieng-finetuned/best-checkpoint/ ./models/embeddings/sailor2-1b-vangvieng-finetuned/best-checkpoint/
+
+USER app
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+
+# Stage 4: Development without models
+FROM runtime as app-no-models
+
+USER app
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--reload"]
+
+# Stage 5: Minimal runtime for CI/testing
+FROM runtime as app-minimal
+
+# Copy only essential files for testing
+COPY --chown=app:app config/ ./config/
+COPY --chown=app:app *.py ./
+
+USER app
+EXPOSE 8000
+
+CMD ["python", "-m", "pytest"]

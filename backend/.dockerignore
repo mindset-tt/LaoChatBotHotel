@@ -1,0 +1,135 @@
+# Optimized .dockerignore for minimal image size
+
+# Python runtime files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyTorch models - include only essential ones
+# Exclude development checkpoints (save ~2GB)
+models/embeddings/*/checkpoint-*/
+!models/embeddings/*/best-checkpoint/
+
+# Exclude large training artifacts
+*.log
+wandb/
+runs/
+tensorboard_logs/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vim
+.nvim
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Cache directories
+.cache/
+.pytest_cache/
+.coverage
+.tox/
+.nox/
+node_modules/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Development tools
+.flake8
+.black
+.isort.cfg
+mypy.ini
+pylint.rc
+
+# Database files (exclude from image)
+*.db
+*.sqlite
+*.sqlite3
+
+# Large data files
+data/
+datasets/
+*.csv
+*.json
+*.parquet
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Exclude development scripts
+setup_*.py
+test_*.py
+dev_*.py

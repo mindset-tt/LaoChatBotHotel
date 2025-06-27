@@ -13,6 +13,8 @@ export const API_CONFIG = {
 // Local Storage Keys
 export const STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
+  REFRESH_TOKEN: 'refresh_token',
+  TOKEN_EXPIRY: 'token_expiry',
   USER_DATA: 'user_data',
   USERNAME: 'username',
   THEME_PREFERENCE: 'theme_preference',
@@ -43,6 +45,7 @@ export const ROUTES = {
   ANALYTICS: '/analytics',
   SYSTEM: '/system',
   CHAT_DETAILS: '/chat-details/:id',
+  REFRESH_TOKEN_DEMO: '/refresh-token-demo',
 } as const;
 
 // User Roles and Permissions

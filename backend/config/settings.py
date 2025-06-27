@@ -100,7 +100,7 @@ class MonitoringConfig:
     ERROR_TRACKING = os.getenv('ERROR_TRACKING', 'true').lower() == 'true'
     
     # Alert thresholds
-    HIGH_RESPONSE_TIME_MS = int(os.getenv('HIGH_RESPONSE_TIME_MS', '5000'))
+    HIGH_RESPONSE_TIME_MS = int(os.getenv('HIGH_RESPONSE_TIME_MS', '10000'))  # Reduced from 5000 to 10000 for mobile GPU
     HIGH_ERROR_COUNT = int(os.getenv('HIGH_ERROR_COUNT', '10'))
     HIGH_OCCUPANCY_RATE = float(os.getenv('HIGH_OCCUPANCY_RATE', '95.0'))
     LOW_CACHE_HIT_RATE = float(os.getenv('LOW_CACHE_HIT_RATE', '50.0'))
@@ -121,8 +121,8 @@ HOTEL_INFO = {
     'website': os.getenv('HOTEL_WEBSITE', 'https://vangvienghotel.la'),
     'timezone': os.getenv('HOTEL_TIMEZONE', 'Asia/Vientiane'),
     'currency': os.getenv('HOTEL_CURRENCY', 'LAK'),
-    'check_in_time': os.getenv('CHECK_IN_TIME', '15:00'),
-    'check_out_time': os.getenv('CHECK_OUT_TIME', '11:00')
+    'check_in_time': os.getenv('CHECK_IN_TIME', '14:00'),
+    'check_out_time': os.getenv('CHECK_OUT_TIME', '12:00')
 }
 
 CONFIG = AppConfig()
