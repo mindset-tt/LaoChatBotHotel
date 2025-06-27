@@ -10,7 +10,7 @@
 <!-- Backend Dependencies -->
 [![PyTorch](https://img.shields.io/badge/PyTorch-latest-orange.svg)](https://pytorch.org/)
 [![Transformers](https://img.shields.io/badge/Transformers-4.46+-yellow.svg)](https://huggingface.co/transformers/)
-[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-latest-green.svg)](https://sqlalchemy.org/)
+[![SQLite3](https://img.shields.io/badge/SQLite3-built--in-blue.svg)](https://www.sqlite.org/)
 [![Pydantic](https://img.shields.io/badge/Pydantic-latest-pink.svg)](https://pydantic.dev/)
 [![Uvicorn](https://img.shields.io/badge/Uvicorn-latest-green.svg)](https://www.uvicorn.org/)
 
@@ -139,7 +139,7 @@
 Python 3.8+ with packages:
 ├── FastAPI 0.104+        # Web framework
 ├── PyTorch               # AI model support
-├── SQLAlchemy           # Database ORM
+├── SQLite3              # Built-in database (no ORM)
 ├── Uvicorn              # ASGI server
 └── Additional AI libraries
 ```
@@ -288,7 +288,7 @@ Node.js 14+ with packages:
 Python 3.8+ with packages:
 ├── FastAPI 0.104+        # Web framework
 ├── PyTorch               # AI model support
-├── SQLAlchemy           # Database ORM
+├── SQLite3              # Built-in database (no ORM)
 ├── Uvicorn              # ASGI server
 └── Additional AI libraries
 ```
