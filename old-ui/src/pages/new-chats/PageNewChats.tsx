@@ -122,7 +122,7 @@ export const PageNewChats = () => {
   };
 
   return (
-    <Box padding={3} width={"100%"} height="100%" display={"flex"}>
+    <Box padding={3} width={"100%"} height="100%">
       <div className="chatPage">
         <Box
           padding={2}
@@ -135,14 +135,14 @@ export const PageNewChats = () => {
           boxShadow="0 2px 8px rgba(0,0,0,0.15)"
           borderRadius={"0.5rem"}
           sx={{ color: "white" }}
+          fontSize={"14px"}
         >
           ChatBot
         </Box>
-        <Box width={"100%"} height={"100%"} display={"flex"} maxHeight={"94%"}>
+        <Box width={"100%"} display={"flex"}>
           <Box
             width={"20%"}
             borderRight={"1px solid #ccc"}
-            height={"100%"}
             sx={{
               width: 300,
               overflowY: "auto", // Enable vertical scrolling
@@ -217,12 +217,12 @@ export const PageNewChats = () => {
           </Box>
           <Box
             width={"80%"}
-            height={"100%"}
+            // height={"100%"}
             padding={3}
-            display={"flex"}
+            // display={"flex"}
             flexDirection="column"
             gap={2}
-            justifyContent={"center"}
+            // justifyContent={"center"}
             sx={{
               overflowY: "auto", // Enable vertical scrolling
               scrollbarWidth: "thin", // Firefox support for custom scrollbar
@@ -238,7 +238,8 @@ export const PageNewChats = () => {
           >
             <div className="wrapper">
               <div className="chat">
-                {chats.map((item, index) => (
+                {/* {chats.map((item, index) => ( */}
+                {mockData.map((item, index) => (
                   <React.Fragment key={index}>
                     {item.role === "user" && (
                       <div className="message user">
@@ -275,7 +276,14 @@ export const PageNewChats = () => {
                     <form className="newForm" onSubmit={clearInput}>
                       <Field name="chat">
                         {(props) => (
-                          <Box width={"100%"}>
+                          <Box
+                            width={"100%"}
+                            sx={{
+                              "& .MuiInputBase-input": {
+                                padding: "12px 10px",
+                              },
+                            }}
+                          >
                             <TextField
                               name={props.input.name}
                               value={props.input.value}
@@ -287,7 +295,7 @@ export const PageNewChats = () => {
                                 "& .MuiOutlinedInput-root": {
                                   borderRadius: "12px",
                                   backgroundColor: "#f5f5f5",
-                                  paddingRight: "8px",
+                                  fontSize: "12px",
                                   "& fieldset": {
                                     borderColor: "#e0e0e0",
                                   },
@@ -308,8 +316,8 @@ export const PageNewChats = () => {
                                       sx={{
                                         backgroundColor: "#4caf50",
                                         color: "white",
-                                        width: "40px",
-                                        height: "40px",
+                                        width: "30px",
+                                        height: "30px",
                                         "&:hover": {
                                           backgroundColor: "#45a049",
                                         },
@@ -320,7 +328,7 @@ export const PageNewChats = () => {
                                         },
                                       }}
                                     >
-                                      <SendIcon />
+                                      <SendIcon fontSize="small" />
                                     </IconButton>
                                   </InputAdornment>
                                 ),
@@ -340,3 +348,74 @@ export const PageNewChats = () => {
     </Box>
   );
 };
+
+const mockData = [
+  {
+    id: "1",
+    role: "user",
+    content: "Hello, how can I help you?",
+    timestamp: new Date(),
+  },
+  {
+    id: "2",
+    role: "bot",
+    content: "I need assistance with my order.",
+    timestamp: new Date(),
+  },
+  {
+    id: "3",
+    role: "user",
+    content: "Can you check the status of my order?",
+    timestamp: new Date(),
+  },
+  {
+    id: "4",
+    role: "bot",
+    content: "Sure, let me look it up for you.",
+    timestamp: new Date(),
+  },
+  { id: "5", role: "user", content: "Thank you!", timestamp: new Date() },
+  {
+    id: "6",
+    role: "bot",
+    content:
+      "You're welcome! If you have any other questions, feel free to ask.",
+    timestamp: new Date(),
+  },
+  {
+    id: "7",
+    role: "user",
+    content: "What is the return policy?",
+    timestamp: new Date(),
+  },
+  {
+    id: "8",
+    role: "bot",
+    content: "You can return items within 30 days of purchase.",
+    timestamp: new Date(),
+  },
+  {
+    id: "9",
+    role: "user",
+    content: "Great! I'll keep that in mind.",
+    timestamp: new Date(),
+  },
+  {
+    id: "10",
+    role: "bot",
+    content: "If you need further assistance, just let me know.",
+    timestamp: new Date(),
+  },
+  {
+    id: "11",
+    role: "user",
+    content: "Thank you for your help!",
+    timestamp: new Date(),
+  },
+  {
+    id: "12",
+    role: "bot",
+    content: "You're welcome! Have a great day!",
+    timestamp: new Date(),
+  },
+];
