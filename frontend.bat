@@ -1,4 +1,4 @@
 @echo off
-call cd .\hotel-management-ui\
+call cd .\old-ui\
 @REM call npm i
 call npm run dev
