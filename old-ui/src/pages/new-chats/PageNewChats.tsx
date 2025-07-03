@@ -238,8 +238,7 @@ export const PageNewChats = () => {
           >
             <div className="wrapper">
               <div className="chat">
-                {/* {chats.map((item, index) => ( */}
-                {mockData.map((item, index) => (
+                 {chats.map((item, index) => ( 
                   <React.Fragment key={index}>
                     {item.role === "user" && (
                       <div className="message user">
