@@ -13,23 +13,34 @@ export const Navbar = () => {
       }}
     >
       <Box
-        width={"30%"}
+        width={"50%"}
         sx={{ display: "flex", justifyContent: "end", alignItems: "center" }}
       >
-        <Typography>Logo</Typography>
-        <img src={fnsLogo} alt="Logo" />
+        <img
+          src={fnsLogo}
+          alt="Logo"
+          style={{ width: "60px", height: "80px" }}
+        />
       </Box>
       <Box width={"100%"}>
         <Box width={"70%"}>
           <Typography
-            variant="h5"
-            sx={{ textAlign: "center", color: "#414040" }}
+            sx={{
+              fontSize: "14px",
+              textAlign: "center",
+              color: "#414040",
+              fontWeight: "bold",
+            }}
           >
-            ຫົວຂໍ້ ການພັດທະນາແຊັດບອດສຳລັບໃຫ້ຂໍ້ມູນການບໍລິການຂອງໂຮງແຮມຄອນເຊຍນາ
+              ການພັດທະນາແຊັດບອດສຳລັບໃຫ້ຂໍ້ມູນການບໍລິການຂອງໂຮງແຮມຄອນເຊຍນາ
           </Typography>
           <Typography
-            variant="h5"
-            sx={{ textAlign: "center", color: "#414040" }}
+            sx={{
+              fontSize: "14px",
+              textAlign: "center",
+              color: "#414040",
+              fontWeight: "bold",
+            }}
           >
             Developing a Chatbot for Providing Hotel Consiana Service
             Information
